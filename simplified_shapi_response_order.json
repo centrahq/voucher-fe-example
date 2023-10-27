@@ -1,0 +1,210 @@
+{
+  "order": "29",
+  "status": "untouched",
+  "statusDescription": "Pending",
+  "message": "Thank you for your order!",
+  "date": "2023-10-26 16:39:43",
+  "affiliateHtml": "",
+  "customer": "",
+  "market": "1",
+  "pricelist": "19",
+  "language": null,
+  "currency": "SEK",
+  "paymentMethod": "dummy",
+  "paymentMethodName": "dummy",
+  "shippingMethod": "sek",
+  "shippingMethodName": "SEK",
+  "items": [
+    {
+      "item": "1-1",
+      "product": "1",
+      "brandName": "Brand",
+      "productName": "Test Product",
+      "productUrl": null,
+      "category": null,
+      "size": "",
+      "sku": "123456789",
+      "ean": "ABCDEFGHIJKL",
+      "upc": "",
+      "silkProduct": "1",
+      "silkVariant": "1445",
+      "quantity": 2,
+      "comment": "",
+      "localizedSize": null,
+      "line": "6cc56afee156d5b485c2df680afbb654",
+      "priceEach": "25.00 SEK",
+      "priceEachAsNumber": 25,
+      "totalPrice": "50.00 SEK",
+      "totalPriceAsNumber": 50,
+      "priceEachBeforeDiscount": "100.00 SEK",
+      "priceEachBeforeDiscountAsNumber": 100,
+      "anyDiscount": true,
+      "discounts": {
+        "vouchers": [
+          {
+            "voucher": "priceoffexclcamp",
+            "priceOff": "-150.00 SEK",
+            "priceOffAsNumber": -150,
+            "hasAffectedItemPrice": true
+          }
+        ],
+        "automaticDiscounts": null
+      },
+      "taxPercent": 25,
+      "priceEachWithoutTax": "20.00 SEK",
+      "priceEachWithoutTaxAsNumber": 20,
+      "priceEachReduction": "75.00 SEK",
+      "priceEachReductionAsNumber": 75,
+      "totalPriceBeforeDiscount": "200.00 SEK",
+      "totalPriceBeforeDiscountAsNumber": 200
+    },
+    {
+      "item": "7-5",
+      "product": "7",
+      "brandName": "",
+      "productName": "Test Product Discounted",
+      "productUrl": null,
+      "category": null,
+      "size": "",
+      "sku": "TEST-DISC456789",
+      "ean": "ABCDEFGHIJKL-2",
+      "upc": "",
+      "silkProduct": "3",
+      "silkVariant": "2446",
+      "quantity": 2,
+      "comment": "",
+      "localizedSize": null,
+      "campaign": {
+        "name": "Retail campaign",
+        "discount": "9.00 SEK",
+        "discountAsNumber": 9
+      },
+      "line": "2a580c5e5b494851f74f17e77cf51a9a",
+      "priceEach": "75.00 SEK",
+      "priceEachAsNumber": 75,
+      "totalPrice": "150.00 SEK",
+      "totalPriceAsNumber": 150,
+      "priceEachBeforeDiscount": "300.00 SEK",
+      "priceEachBeforeDiscountAsNumber": 300,
+      "anyDiscount": true,
+      "discounts": {
+        "vouchers": [
+          {
+            "voucher": "priceoffexclcamp",
+            "priceOff": "-432.00 SEK",
+            "priceOffAsNumber": -432,
+            "hasAffectedItemPrice": true
+          }
+        ],
+        "automaticDiscounts": null
+      },
+      "taxPercent": 25,
+      "priceEachWithoutTax": "60.00 SEK",
+      "priceEachWithoutTaxAsNumber": 60,
+      "priceEachReduction": "225.00 SEK",
+      "priceEachReductionAsNumber": 225,
+      "totalPriceBeforeDiscount": "600.00 SEK",
+      "totalPriceBeforeDiscountAsNumber": 600
+    },
+    {
+      "item": "5-3",
+      "product": "5",
+      "brandName": "",
+      "productName": "Another Test Product",
+      "productUrl": null,
+      "category": null,
+      "size": "",
+      "sku": "",
+      "ean": "anothertestproductgreen",
+      "upc": "",
+      "silkProduct": "2",
+      "silkVariant": "1447",
+      "quantity": 1,
+      "comment": "",
+      "localizedSize": null,
+      "campaign": {
+        "name": "Test Campaign",
+        "discount": "94.50 SEK",
+        "discountAsNumber": 94.5
+      },
+      "line": "2159bb16ffbaf2b58393e8d5da051f11",
+      "priceEach": "47.25 SEK",
+      "priceEachAsNumber": 47.25,
+      "totalPrice": "47.25 SEK",
+      "totalPriceAsNumber": 47.25,
+      "priceEachBeforeDiscount": "189.00 SEK",
+      "priceEachBeforeDiscountAsNumber": 189,
+      "anyDiscount": true,
+      "discounts": {
+        "vouchers": [
+          {
+            "voucher": "priceoffexclcamp",
+            "priceOff": "-47.25 SEK",
+            "priceOffAsNumber": -47.25,
+            "hasAffectedItemPrice": true
+          }
+        ],
+        "automaticDiscounts": null
+      },
+      "taxPercent": 25,
+      "priceEachWithoutTax": "37.80 SEK",
+      "priceEachWithoutTaxAsNumber": 37.8,
+      "priceEachReduction": "141.75 SEK",
+      "priceEachReductionAsNumber": 141.75,
+      "totalPriceBeforeDiscount": "189.00 SEK",
+      "totalPriceBeforeDiscountAsNumber": 189
+    }
+  ],
+  "discounts": {
+    "anyDiscount": false,
+    "discount": "0.00 SEK",
+    "discountAsNumber": 0,
+    "vouchers": {
+      "priceoffexclcamp": {
+        "voucher": "priceoffexclcamp",
+        "type": "code",
+        "priceOff": "0.00 SEK",
+        "priceOffAsNumber": -0,
+        "description": "priceoffexclcamp",
+        "expiryDate": "2099-10-21 16:25:00",
+        "lines": [
+          "6cc56afee156d5b485c2df680afbb654",
+          "2a580c5e5b494851f74f17e77cf51a9a",
+          "2159bb16ffbaf2b58393e8d5da051f11"
+        ],
+        "shippingDiscountAsNumber": 0,
+        "shippingDiscount": "0.00 SEK",
+        "attributes": []
+      }
+    },
+    "automaticDiscounts": []
+  },
+  "totals": {
+    "itemsTotalPrice": "247.25 SEK",
+    "itemsTotalPriceAsNumber": 247.25,
+    "totalDiscountPrice": false,
+    "totalDiscountPriceAsNumber": false,
+    "shippingPrice": "0.00 SEK",
+    "shippingPriceAsNumber": 0,
+    "handlingCostPrice": "0.00 SEK",
+    "handlingCostPriceAsNumber": 0,
+    "totalQuantity": 5,
+    "taxDeducted": false,
+    "taxDeductedAsNumber": false,
+    "taxAdded": false,
+    "taxAddedAsNumber": false,
+    "taxPercent": 25,
+    "grandTotalPrice": "247.25 SEK",
+    "grandTotalPriceAsNumber": 247.25,
+    "grandTotalPriceTax": "49.45 SEK",
+    "grandTotalPriceTaxAsNumber": 49.45
+  },
+  "vatExempt": false,
+  "address": { },
+  "shippingAddress": { },
+  "giftMessage": "",
+  "additionalNotes": "",
+  "shipments": [],
+  "currencyFormat": { },
+  "paymentMethodData": {  }
+}

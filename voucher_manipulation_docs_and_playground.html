@@ -1,0 +1,274 @@
+<!--
+  This file shows how a Centra response can be manipulated to show voucher the same way for both payment-result (receipt) responses and selection responses.
+-->
+<html>
+<head><title>Centra response voucher manipulation playground</title></head>
+
+<script>
+
+/*
+ * This function should be seen as a learning tool for how the
+ * values provided by Centra APIs can be manipulated to achieve certain results.
+ * it is in no way well tested production ready code.
+ *
+ * @var object centraResponse object containing a Centra selection or order response Shop or CheckoutAPI
+ * @return array of three object maps
+ *  all object values have 2 keys
+ *    "orderLevelAdjust" add this to the total from api to turn a value into "order" level,
+ *    "itemLevelAdjust" add this to the total from api to turn value into "item" level
+ *  The three different objects contain
+ *    [0] first object is a map for "items", keyed on "line" hash
+ *    [1] second object is a map for "discounts.vouchers", keyed on "voucher"
+ *    [2] third object is a map for "discounts.automaticDiscounts", keyed on "automaticDiscount"
+ */
+function getAdjustments(centraResponse) {
+  //We need to have adjustments per line
+  let line_adjust = {};
+  //And also per discount
+  let voucher_adjust = {};
+  let automatic_adjust = {};
+
+  for (let i = 0; i < centraResponse.items.length; i++) {
+
+    const line = centraResponse.items[i]
+
+    //initialise the adjustment map for this line
+    line_adjust[line.line] = {"orderLevelAdjust": 0, "itemLevelAdjust": 0}
+
+    if (line.discounts && line.discounts.vouchers instanceof Array) {
+
+      //Step through all vouchers
+      for (let disc = 0; disc < line.discounts.vouchers.length; disc++) {
+
+        const voucher = line.discounts.vouchers[disc];
+
+        if (!voucher_adjust.hasOwnProperty(voucher.voucher)) {
+          //Initialise adjustments map for this voucher if it has not already been done
+          voucher_adjust[voucher.voucher] = {"orderLevelAdjust": 0, "itemLevelAdjust": 0}
+        }
+        
+        if (voucher.hasAffectedItemPrice) {
+          //item prices has been adjusted for vouchers, this is often the case for "order" responses
+          //Here we must sum up the necessary adjustments to be able to show item price before voucher
+
+          //Sum per voucher
+          voucher_adjust[voucher.voucher].orderLevelAdjust += voucher.priceOffAsNumber
+
+          //sum per item
+          line_adjust[line.line].orderLevelAdjust -= voucher.priceOffAsNumber
+        } else {
+          //item prices has not been adjusted for this voucher, this is always the case for selection responses
+          //Here we sum up the necessary adjustment to be able to show item price after voucher
+
+          //Sum per voucher
+          voucher_adjust[voucher.voucher].itemLevelAdjust -= voucher.priceOffAsNumber
+
+          //sum per item
+          line_adjust[line.line].itemLevelAdjust += voucher.priceOffAsNumber
+        }
+      }
+    }
+
+    if (line.discounts && line.discounts.automaticDiscounts instanceof Array) {
+      for (let disc = 0; disc < line.discounts.automaticDiscounts.length; disc++) {
+
+        const automatic = line.discounts.automaticDiscounts[disc];
+
+        if (!automatic_adjust.hasOwnProperty(automatic.automaticDiscount)) {
+          automatic_adjust[automatic.automaticDiscount] = {"orderLevelAdjust": 0, "itemLevelAdjust": 0}
+        }
+        
+        if (automatic.hasAffectedItemPrice) {
+          //item prices has been adjusted for vouchers, this is often the case for "order" responses
+          //Here we must sum up the necessary adjustments to be able to show item price before voucher
+
+          //Sum per automaticDiscount
+          automatic_adjust[automatic.automaticDiscount].orderLevelAdjust += automatic.priceOffAsNumber
+
+          //Sum per item
+          line_adjust[line.line].orderLevelAdjust -= automatic.priceOffAsNumber
+        } else {
+          //item prices has not been adjusted for this voucher, this is always the case for selection responses
+          //Here we sum up the necessary adjustment to be able to show item price after voucher
+
+          //Sum per automaticDiscount
+          automatic_adjust[automatic.automaticDiscount].itemLevelAdjust -= automatic.priceOffAsNumber
+
+          //Sum per item
+          line_adjust[line.line].itemLevelAdjust += automatic.priceOffAsNumber
+        }
+      }
+    }
+  }
+
+  return [line_adjust, voucher_adjust, automatic_adjust]
+}
+
+/**
+ * This function implements a simplistic order view from teh response from teh textarea
+ * shows how the objects returned by getAdjustments can be used
+ */
+function calculateValues()
+{
+  let data = document.getElementById("json_area").value
+  let parsed = JSON.parse(data)
+  if (!parsed.hasOwnProperty("market")) {
+    //this response is from CheckoutAPI
+    if (parsed.hasOwnProperty("order")) {
+      parsed = parsed.order;
+    } else {
+      parsed = parsed.selection;
+    }
+  }
+
+  //To show if the parsed response is order or selection
+  let isOrderResp = parsed.hasOwnProperty("order");
+
+  const [line_adjust, voucher_adjust, automatic_adjust] = getAdjustments(parsed);
+
+  console.log("Item Adjustments: ");
+  console.log(line_adjust);
+  console.log("Discount Adjustments: ");
+  console.log(voucher_adjust);
+  console.log(automatic_adjust);
+
+  //Display the selection/order
+  let itemsTotal = 0;
+  let itemStr = "";
+  for (let i = 0; i < parsed.items.length; i++) {
+
+    const line = parsed.items[i];
+    //calculate the new line before voucher by adding this lines adjustment to it.
+    const lineTotalBefore = line.totalPriceAsNumber + line_adjust[line.line].orderLevelAdjust;
+    //to get unit price before voucher, simply divide by total. (NOTE: this is safe but watch out for floating point errors..)
+    const lineTotalBeforeUnit = lineTotalBefore / line.quantity;
+
+    //calculate the line total after voucher by adding the adjustment
+    const lineTotalAfter = line.totalPriceAsNumber + line_adjust[line.line].itemLevelAdjust;
+    //To get line total after discount, divide by quantity, 
+    //!WARNING! this can give a non-divisible answer rounding may lead to final result not matching.
+    const lineTotalAfterUnit = lineTotalAfter / line.quantity;
+
+    //sum up item prices before voucher to be able to verify against what Centra gives
+    itemsTotal += lineTotalBefore;
+
+    //A simplistic display so we can see the result. 
+    itemStr += "item: <strong>" + line.item + "</strong>" +
+      " quantity: <strong>" + line.quantity + "</strong>" +
+      " before voucher: <strong>" + lineTotalBefore + "</strong> (<strong>" + lineTotalBeforeUnit + "</strong>)" +
+      " after voucher: <strong>" + lineTotalAfter + "</strong> (<strong>" + lineTotalAfterUnit + "</strong>)" +
+      " from api: <strong>" + line.totalPriceAsNumber + "</strong> (<strong>" + line.priceEachAsNumber + "</strong>)" +
+      "<br />\n";
+
+  }
+
+  let vouchersTotal = 0;
+  let voucherStr = "";
+
+  const calculateVoucherAdjustments = function(voucher) {
+    // First entry is voucher always as if order level
+    // Second entry is voucher always as if item level
+    if (!voucher_adjust.hasOwnProperty(voucher.voucher)) {
+      //If this has not been set, the voucher did not give discopunt to items, could be free shipping or free product
+      return [0,0]
+    }
+
+    return [
+      voucher.priceOffAsNumber + voucher_adjust[voucher.voucher].orderLevelAdjust,
+      voucher.priceOffAsNumber + voucher_adjust[voucher.voucher].itemLevelAdjust
+    ];
+  };
+  const calculateAutomaticAdjustments = function(automatic) {
+    // First entry is voucher always as if order level
+    // Second entry is voucher always as if item level
+    if (!automatic_adjust.hasOwnProperty(automatic.automaticDiscount)) {
+      //If this has not been set, the voucher did not give discopunt to items, could be free shipping or free product
+      return [0,0]
+    }
+    
+    return [
+      automatic.priceOffAsNumber + automatic_adjust[automatic.automaticDiscount].orderLevelAdjust,
+      automatic.priceOffAsNumber + automatic_adjust[automatic.automaticDiscount].itemLevelAdjust
+    ];
+  };
+
+  const buildVoucherString = function(voucher, voucherTotalOrder, voucherTotalItem, voucherType) {
+    return voucherType + " <strong>" + (voucher.description ?? voucher.name) + "</strong>: " +
+        " order level: <strong>" + voucherTotalOrder + "</strong>" +
+        " item level: <strong>" + voucherTotalItem + "</strong>" +
+        " from api: <strong>" + voucher.priceOffAsNumber  + "</strong>" +
+        "<br />";
+  };
+
+  //Do calulations for "discounts.vouchers", ShopAPI uses an object CheckoutAPI an array
+  if (typeof parsed.discounts.vouchers === "object") {
+    for (const [key, voucher] of Object.entries(parsed.discounts.vouchers)) {
+      const [voucherTotalOrder, voucherTotalItem] = calculateVoucherAdjustments(voucher)
+      vouchersTotal += voucherTotalOrder;
+      voucherStr += buildVoucherString(voucher, voucherTotalOrder, voucherTotalItem, "voucher");
+    }
+  } else if (parsed.discounts.vouchers instanceof Array) {
+    for (let disc = 0; disc < parsed.discounts.vouchers.length; disc++) {
+      const voucher = parsed.discounts.vouchers[disc];
+      const [voucherTotalOrder, voucherTotalItem] = calculateVoucherAdjustments(voucher)
+      vouchersTotal += voucherTotalOrder;
+      voucherStr += buildVoucherString(voucher, voucherTotalOrder, voucherTotalItem, "voucher");
+    }
+  }
+
+  //Do calulations for "discounts.automaticDiscounts", ShopAPI uses an object CheckoutAPI an array
+  if (typeof parsed.discounts.automaticDiscounts === "object") {
+    for (const [key, automatic] of Object.entries(parsed.discounts.automaticDiscounts)) {
+      const [automaticTotalOrder, automaticTotalItem] = calculateAutomaticAdjustments(automatic)
+      vouchersTotal += automaticTotalOrder;
+      voucherStr += buildVoucherString(automatic, automaticTotalOrder, automaticTotalItem, "automatic");
+    }
+  } else if (parsed.discounts.automaticDiscounts instanceof Array) {
+    for (let disc = 0; disc < parsed.discounts.automaticDiscounts.length; disc++) {
+      const automatic = parsed.discounts.automaticDiscounts[disc];
+      const [automaticTotalOrder, automaticTotalItem] = calculateAutomaticAdjustments(automatic)
+      vouchersTotal += automaticTotalOrder;
+      voucherStr += buildVoucherString(automatic, automaticTotalOrder, automaticTotalItem, "automatic");
+    }
+  }
+
+  // let's calculate the grand total with our adjusted values + given shipping and tax
+  let grandTotalCalc = itemsTotal + vouchersTotal + parsed.totals.shippingPriceAsNumber;
+  if (typeof parsed.totals.taxAddedAsNumber === "number") {
+    grandTotalCalc += parsed.totals.taxAddedAsNumber;
+  }
+
+
+  let target = document.getElementById("display_area");
+  target.innerHTML = "Type of response: <strong>" + (isOrderResp ? "order" : "selection") + "</strong><br />" +
+    "<br />Items:  <br />" + itemStr + 
+    "<br /> Shipping: <strong>" + (parsed.totals.shippingPriceAsNumber) + "</strong><br />" +
+    "<br />" + "Vouchers: <br />" + voucherStr + 
+    "<br />calculated grand total: <strong>" + grandTotalCalc + "</strong>" +
+    "<br />grand total from Centra <strong>" + parsed.totals.grandTotalPriceAsNumber + "</strong>" +
+    "<br /><strong>" + (grandTotalCalc === parsed.totals.grandTotalPriceAsNumber ? "They are the same !!" : "NOT THE SAME!") + "</strong><br />";
+}
+
+</script>
+
+<body>
+  <div>
+    Paste Centra json response here:<br />
+    <textarea id="json_area" rows=30 cols=120></textarea><br /><br />
+    <button onclick="calculateValues(); return false;">Click to display the response after adjustments</button>
+  </div>
+
+  <br /><hr />
+  <p>
+    You should see that "from api" values changes for an order response with "order item" vouchers applied, <br />
+    but before and after values should remain the same, as should "calculated grand total" and "grand total from Centra", <br />
+    you should never see the text "NOT THE SAME!"
+  </p>
+
+  <hr />
+
+  Order info:<br />
+  <div id="display_area"></div>
+
+  </body>
+</html>

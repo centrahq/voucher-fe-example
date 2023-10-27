@@ -1,0 +1,134 @@
+{
+  "order": {
+    "order": "30",
+    "status": "untouched",
+    "statusDescription": "Pending",
+    "date": "2023-10-26 23:49:21",
+    "affiliateHtml": "",
+    "language": "sv",
+    "currency": "SEK",
+    "paymentMethod": "dummy",
+    "paymentMethodName": "dummy",
+    "shippingMethod": "sek",
+    "shippingMethodName": "SEK",
+    "items": [
+      {
+        "item": "1-1",
+        "productUrl": null,
+        "category": null,
+        "size": "",
+        "sku": "123456789",
+        "ean": "ABCDEFGHIJKL",
+        "upc": "",
+        "quantity": 1,
+        "comment": null,
+        "localizedSize": null,
+        "line": "7a8daec09d6964a7d8b6eb483864ab16",
+        "priceEach": "85.00 SEK",
+        "priceEachAsNumber": 85,
+        "totalPrice": "85.00 SEK",
+        "totalPriceAsNumber": 85,
+        "priceEachBeforeDiscount": "100.00 SEK",
+        "priceEachBeforeDiscountAsNumber": 100,
+        "anyDiscount": true,
+        "discounts": {
+          "vouchers": [
+            {
+              "voucher": "15percoff",
+              "priceOff": "-15.00 SEK",
+              "priceOffAsNumber": -15,
+              "hasAffectedItemPrice": true
+            }
+          ],
+          "automaticDiscounts": null
+        },
+        "taxPercent": 25,
+        "priceEachWithoutTax": "68.00 SEK",
+        "priceEachWithoutTaxAsNumber": 68,
+        "priceEachReduction": "15.00 SEK",
+        "priceEachReductionAsNumber": 15,
+        "totalPriceBeforeDiscount": "100.00 SEK",
+        "totalPriceBeforeDiscountAsNumber": 100,
+        "product": {}
+      }
+    ],
+    "discounts": {
+      "anyDiscount": false,
+      "discount": "0.00 SEK",
+      "discountAsNumber": 0,
+      "vouchers": [
+        {
+          "voucher": "15percoff",
+          "type": "code",
+          "priceOff": "0.00 SEK",
+          "priceOffAsNumber": -0,
+          "description": "15percoff",
+          "expiryDate": "2094-05-02 11:06:58",
+          "lines": [
+            "7a8daec09d6964a7d8b6eb483864ab16"
+          ],
+          "shippingDiscountAsNumber": 0,
+          "shippingDiscount": "0.00 SEK",
+          "attributes": []
+        }
+      ],
+      "automaticDiscounts": []
+    },
+    "totals": {
+      "itemsTotalPrice": "85.00 SEK",
+      "itemsTotalPriceAsNumber": 85,
+      "totalDiscountPrice": false,
+      "totalDiscountPriceAsNumber": false,
+      "shippingPrice": "0.00 SEK",
+      "shippingPriceAsNumber": 0,
+      "handlingCostPrice": "0.00 SEK",
+      "handlingCostPriceAsNumber": 0,
+      "totalQuantity": 1,
+      "taxDeducted": false,
+      "taxDeductedAsNumber": false,
+      "taxAdded": false,
+      "taxAddedAsNumber": false,
+      "taxPercent": 25,
+      "grandTotalPrice": "85.00 SEK",
+      "grandTotalPriceAsNumber": 85,
+      "grandTotalPriceTax": "17.00 SEK",
+      "grandTotalPriceTaxAsNumber": 17
+    },
+    "vatExempt": false,
+    "address": { },
+    "shippingAddress": { },
+    "giftMessage": "",
+    "additionalNotes": "",
+    "currencyFormat": {
+      "currency": "SEK",
+      "name": "SEK",
+      "prefix": "",
+      "suffix": " SEK",
+      "decimalPoint": ".",
+      "decimalDigits": "2",
+      "thousandsSeparator": " ",
+      "denominator": 100,
+      "uri": "sek"
+    },
+    "paymentMethodData": {
+      "html_snippet": "Dummy payment plugin snippet"
+    }
+  },
+  "countries": [ ],
+  "languages": [ ],
+  "location": {
+    "country": "SE",
+    "name": "Sweden",
+    "state": null,
+    "stateName": "",
+    "eu": true,
+    "shipTo": true,
+    "market": 1,
+    "pricelist": 19,
+    "language": {
+      "language": "sv",
+      "name": "Swedish",
+      "default": false
+    }
+  }
+}
